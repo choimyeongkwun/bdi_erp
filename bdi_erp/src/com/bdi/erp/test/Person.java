@@ -24,6 +24,5 @@ public class Person implements Action{
 
 	public static void main(String[] args) {
 		Action a = new Person();
-		((Person)a).talk("asdf");
 	}
 }

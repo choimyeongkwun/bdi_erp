@@ -17,6 +17,9 @@ public class ViewServlet extends HttpServlet {
 		String rPath = request.getContextPath();
 		uri = uri.replace(rPath, "");
 		uri = "/WEB-INF" + uri + ".jsp";
+		String name = request.getParameter("name");
+		
+		request.setAttribute("name",name);
 		RequestDispatcher rd = 
 			request.getRequestDispatcher(uri);
 		rd.forward(request, response);
