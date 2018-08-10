@@ -2,9 +2,17 @@ package com.bdi.erp.common;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DBConnection {
+	
 	private static final String URL = "jdbc:mariadb://localhost:3306/dbi";
 	private static final String USER = "root";
 	private static final String PASSWORD = "12345678";
@@ -42,5 +50,33 @@ public class DBConnection {
 	public static void main(String[] args) {
 		Connection con = DBConnection.getCon();
 		System.out.println("에러 없으면 연결된거지~");
+	}
+	
+	public static List<Map<String,String>> selectList(String sql) throws SQLException{
+		List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+		Connection con = null;
+		try {
+			con = getCon();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData rsmt = rs.getMetaData();
+			
+			Map<String,String> user;
+			while(rs.next()) {
+				user = new HashMap<String,String>();
+				for(int i=1;i<=rsmt.getColumnCount();i++) {
+					String colNm = rsmt.getColumnLabel(i);
+					user.put(colNm, rs.getString("colNm"));
+				}
+				list.add(user);
+			}
+		}catch (SQLException e) {
+			throw e;
+		}finally {
+			if(con!=null) {				
+				DBConnection.closeCon();
+			}
+		}
+		return list;
 	}
 }
